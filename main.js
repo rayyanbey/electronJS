@@ -1,11 +1,11 @@
-import { app, BrowserWindow} from "electron";
+import { app, BrowserWindow, Menu} from "electron";
 import path from "path";
 
 
 const isMac = process.platform === "darwin";
 const isDev = process.env.NODE_ENV !== "production";
 
-
+//Create the main window
 function createMainWindow() {
   const mainWindow = new BrowserWindow({
     title: "ImageShrink",
@@ -21,8 +21,15 @@ function createMainWindow() {
   mainWindow.loadFile("client/theme/index.html");
 }
 
+//App is ready
+
+
 app.whenReady().then(()=>{
     createMainWindow();
+    //Building and implementing the custom menu
+    const mainMenu = Menu.buildFromTemplate(menu);
+    Menu.setApplicationMenu(mainMenu);
+
 }); 
 
 
@@ -31,6 +38,17 @@ app.on("window-all-closed", () => {
     app.quit();
   }
 });
+
+//Menu Template
+
+const menu ={
+  label:"File",
+  submenu:{
+    label: "Quit",
+    click: ()=> app.quit(),
+    accelerator: "CmdOrCtrl+W"
+  }
+}
 
 
 app.on("activate",()=>{
