@@ -1,5 +1,4 @@
 import { app, BrowserWindow, Menu} from "electron";
-import path from "path";
 
 
 const isMac = process.platform === "darwin";
@@ -18,12 +17,21 @@ function createMainWindow() {
     mainWindow.webContents.openDevTools();
   }
   //mainWindow.loadURL('https://portfolio-hazel-xi-80.vercel.app/')
-  mainWindow.loadFile("client/theme/index.html");
+   mainWindow.loadFile("client/theme/index.html");
+}
+
+//Create about window
+function createAboutWindow(){
+  const aboutWindow = new BrowserWindow({
+    title: "About ImageShrink",
+    width: 300,
+    height: 300,
+  })
+
+  aboutWindow.loadFile("client/theme/about.html");
 }
 
 //App is ready
-
-
 app.whenReady().then(()=>{
     createMainWindow();
     //Building and implementing the custom menu
@@ -40,16 +48,26 @@ app.on("window-all-closed", () => {
 });
 
 //Menu Template
-
-const menu ={
-  label:"File",
-  submenu:{
-    label: "Quit",
-    click: ()=> app.quit(),
-    accelerator: "CmdOrCtrl+W"
-  }
-}
-
+const menu =[
+  ...(isMac? [{label:app.name, submenu:[
+    {
+      label:'About',
+      click: createAboutWindow
+    }
+  ]}]:[]),
+  {
+    role:'fileMenu'
+  },
+  ...(!isMac)?[{
+    label:'Help',
+    submenu:[
+      {
+        label:'About',
+      click: createAboutWindow
+      }
+    ]
+  }]:[]
+]
 
 app.on("activate",()=>{
   if(BrowserWindow.getAllWindows().length === 0){
