@@ -1,5 +1,5 @@
-import { app, BrowserWindow, Menu} from "electron";
-
+const { app, BrowserWindow, Menu } = require("electron");
+const path = require("path");
 
 const isMac = process.platform === "darwin";
 const isDev = process.env.NODE_ENV !== "production";
@@ -8,20 +8,25 @@ const isDev = process.env.NODE_ENV !== "production";
 function createMainWindow() {
   const mainWindow = new BrowserWindow({
     title: "ImageShrink",
-    width: isDev? 1000: 500,
-    height: 600
+    width: isDev ? 1000 : 500,
+    height: 600,
+    webPreferences: {
+      contextIsolation: true,
+      nodeIntegration: true,
+      preload: path.join(__dirname, 'preload.js')
+    }
   });
 
   //open dev tool if in dev env
-  if(isDev){
+  if (isDev) {
     mainWindow.webContents.openDevTools();
   }
   //mainWindow.loadURL('https://portfolio-hazel-xi-80.vercel.app/')
-   mainWindow.loadFile("client/theme/index.html");
+  mainWindow.loadFile("client/theme/index.html");
 }
 
 //Create about window
-function createAboutWindow(){
+function createAboutWindow() {
   const aboutWindow = new BrowserWindow({
     title: "About ImageShrink",
     width: 300,
@@ -32,14 +37,13 @@ function createAboutWindow(){
 }
 
 //App is ready
-app.whenReady().then(()=>{
-    createMainWindow();
-    //Building and implementing the custom menu
-    const mainMenu = Menu.buildFromTemplate(menu);
-    Menu.setApplicationMenu(mainMenu);
+app.whenReady().then(() => {
+  createMainWindow();
+  //Building and implementing the custom menu
+  const mainMenu = Menu.buildFromTemplate(menu);
+  Menu.setApplicationMenu(mainMenu);
 
-}); 
-
+});
 
 app.on("window-all-closed", () => {
   if (!isMac) {
@@ -48,29 +52,31 @@ app.on("window-all-closed", () => {
 });
 
 //Menu Template
-const menu =[
-  ...(isMac? [{label:app.name, submenu:[
-    {
-      label:'About',
-      click: createAboutWindow
-    }
-  ]}]:[]),
-  {
-    role:'fileMenu'
-  },
-  ...(!isMac)?[{
-    label:'Help',
-    submenu:[
+const menu = [
+  ...(isMac ? [{
+    label: app.name, submenu: [
       {
-        label:'About',
-      click: createAboutWindow
+        label: 'About',
+        click: createAboutWindow
       }
     ]
-  }]:[]
+  }] : []),
+  {
+    role: 'fileMenu'
+  },
+  ...(!isMac) ? [{
+    label: 'Help',
+    submenu: [
+      {
+        label: 'About',
+        click: createAboutWindow
+      }
+    ]
+  }] : []
 ]
 
-app.on("activate",()=>{
-  if(BrowserWindow.getAllWindows().length === 0){
+app.on("activate", () => {
+  if (BrowserWindow.getAllWindows().length === 0) {
     createMainWindow();
   }
 })

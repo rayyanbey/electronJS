@@ -3,13 +3,13 @@
   "productName": "Image Resizer",
   "version": "1.0.0",
   "main": "main.js",
-  "type": "module",
+  "type": "commonjs",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "electron ."
   },
   "keywords": [],
-  "author": "",
+  "author": "Muhammad Rayyan Asghar",
   "license": "MIT",
   "description": "",
   "dependencies": {
