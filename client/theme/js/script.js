@@ -21,14 +21,83 @@ img.addEventListener("change", (e) => {
         };
         image.src = URL.createObjectURL(file); // Set the src attribute
     } else {
-        console.log("Please upload an image file");
+        alertError("Please select an image file (png, jpeg, jpg, gif)");
         return;
     }
-    console.log("Success");
+    alertSuccess("Image selected successfully");
 });
 
-//check if the file is an image
+
+form.addEventListener("submit", async (e) => {
+    e.preventDefault()
+
+    const width = widthInput.value
+    const height = heightInput.value 
+    const imagePath = img.files[0].path
+
+    if(!img.files[0]){
+        alertError("Please upload an image");
+        return
+    }
+
+    if(width === "" || height === ""){
+        alertError("Please enter valid dimensions");
+        return
+    }
+
+    //send to main using IPC renderer
+
+    ipcRenderer.send('image:resize', {
+        imagePath,
+        width,
+        height
+    })
+})
+
+//Get Response from Main
+ipcRenderer.on('image:done',()=>{
+    alertSuccess("Image Resized")
+})
+
+
+
+
+
+
+
+
+
+
+
+//Utilities 
 const isImage = (file) => {
     const types = ["image/png", "image/jpeg", "image/jpg", "image/gif"];
     return types.includes(file.type);
 };
+
+
+function alertError(message){
+    Toastify.toast({
+        text:message,
+        duration: 5000,
+        close: false,
+        style:{
+            background: "red",
+            color: 'white',
+            textAlign: 'center'
+        }
+    })
+}
+
+function alertSuccess(message){
+    Toastify.toast({
+        text:message,
+        duration: 5000,
+        close: false,
+        style:{
+            background: "green",
+            color: 'white',
+            textAlign: 'center'
+        }
+    })
+}
