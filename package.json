@@ -6,15 +6,44 @@
   "type": "commonjs",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "electron ."
+    "start": "electron .",
+    "build": "electron-builder"
+  },
+  "build": {
+    "appId": "com.yourcompany.yourapp",
+    "productName": "YourAppName",
+    "files": [
+      "dist/**/*",
+      "node_modules/**/*",
+      "main.js",
+      "package.json"
+    ],
+    "win": {
+      "target": "nsis"
+    },
+    "mac": {
+      "target": "dmg"
+    },
+    "linux": {
+      "target": [
+        {
+          "target": "AppImage",
+          "arch": ["x64", "ia32"]
+        }
+      ],
+      "category": "Graphics"
+    }
   },
   "keywords": [],
   "author": "Muhammad Rayyan Asghar",
   "license": "MIT",
-  "description": "",
+  "description": "A simple image resizer application built with Electron.",
   "dependencies": {
-    "electron": "^33.0.1",
     "resize-img": "^2.0.0",
     "toastify-js": "^1.12.0"
+  },
+  "devDependencies": {
+    "electron": "^33.0.1",
+    "electron-builder": "^25.1.8"
   }
 }
